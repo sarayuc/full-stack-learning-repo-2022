@@ -24,4 +24,4 @@ While we dont have any strict requirements for this assignment, as there are man
 ## Suggestions
 - Add some padding to your resume to make it look centered (or use flexbox).
 - Try downloading/importing a new font for your resume.
-- Try changing the font size/style for certain text to make them stand out (ie. bold the section headers).
+- Try changing the font size/style for certain text to make them stand out (ie. bold the section headers).~
