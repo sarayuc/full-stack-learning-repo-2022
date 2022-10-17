@@ -65,4 +65,23 @@
     font-weight: bold;
     cursor: pointer;
   }
-  
+
+  .flex-container {
+    display: flex;
+    flex-direction: row;
+    color: black;
+    justify-content: center;
+    align-items: center;
+  }
+  .flex-item {
+    flex: 1;
+    background: #FFFFFF;
+    border: 1px solid #0075FF;
+    border-radius: 5px;
+    padding: 10px;
+    font-family: 'Roboto';
+  }
+
+  h1 {
+    text-align: center;
+  }

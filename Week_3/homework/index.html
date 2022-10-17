@@ -10,6 +10,16 @@
 <body>
 	<div id='main-container'>
 		<div id='weather-container'>
+			<ul id="weather-results-list"></ul>
+			<div class="flex-container">
+				<div class="flex-item">
+					<h1></h1>
+				</div>
+				<div class="flex-item">flex item 2</div>
+				<div class="flex-item">flex item 3</div>
+				<div class="flex-item">flex item 4</div>
+				<div class="flex-item">flex item 5</div>
+			  </div>
 		</div> 
 	</div>
 	<div id='side-container'>
@@ -23,7 +33,7 @@
 
 <script>
 		// USE YOUR OWN API KEY
-		const apiKey = "";
+		const apiKey = "482077a69851b3a52657d892f35a699b";
 
         // variable that stores the city that is chosen
 		let city;
@@ -99,7 +109,59 @@
 				lat: lat,
 				lon: lon
 			}
-            // BEGIN CODING HERE
+            
+		// BEGIN CODING HERE
+
+		function getAQI() {
+			let apiCall = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+
+				// calls the API
+				fetch(apiCall)
+					.then((response) => 
+						// after recieving a response, take the response from the server and convert it to JSON 
+						response.json()
+					)
+					.then((data) => {
+						console.log(data);
+						aqi = data.list[0].main.aqi;
+						renderAQI();
+					});
 		}
+
+		function renderAQI() {
+			document.querySelector('#aqi').innerText = 'AQI: ' + aqi;
+		}
+
+		function currentWeather() {
+			let apiCall = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude={daily}&units=imperial&appid=${apiKey}`
+
+			// calls the API
+			fetch(apiCall)
+				.then((respone) =>
+				response.json()
+			)
+			.then((data) => {
+				renderCurrentWeather(data)
+			});
+		}
+
+		function renderCurrentWeather(weatherData) {
+			const todayWeather = {
+				todaysAQI: aqi,
+				temp: weatherData[0].current.temp - 273
+			};
+
+			for (var i = 0; i < 5; i++) {
+				const oneDayWeather = {
+					minTemp: weatherData[0].daily[i].min - 273,
+					maxTemp: weatherData[0].daily[i].max - 273,
+					image: weatherData[0].daily[i].weather.icon
+				};
+			}
+			
+55		}
+
+	}
+		// response from the api from the weather, rendering for weather in a diff function	
 	</script>
 </html>
