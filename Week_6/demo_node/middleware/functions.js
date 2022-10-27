@@ -17,13 +17,15 @@ function validateSchema(obj) {
     } else {
       let m = "JSON object does not contain " + fieldsNotContained;
       console.log(m);
-      res.json({ msg: m });
+      res.status(400).son({ msg: m });
     }
   };
 }
 
 function handleErrors(err, req, res, next) {
   //TODO: write an error handler that logs out the message of the error and returns it to the user
+  console.log(err.stack);
+  return res.send(err.stack);
 }
 
 module.exports = { validateSchema, handleErrors };

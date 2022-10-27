@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 
 // Define route and middlewares
+const middleware = require('../middleware/functions');
 const users = express.Router();
 users.use(cors());
 users.use(express.json());
@@ -44,9 +45,37 @@ users.get("/:user_id", (req, res, next) => {
   } else {
     throw Error("User not found");
   }
-});
+},
+  middleware.handleErrors
+);
 
 // TODO: add POST (Create) route with json input validation middleware
+users.post("/", middleware.validateSchema(User), (req, res) => {
+  // console.log(req.body);
+  // res.send("Sucess");
+  const body = req.body;
+
+  if (body.username == undefined && body.password == undefined) {
+    return res.json({
+      msg: "Username and Password not defined",
+      data: {}
+    });
+  }
+  exist = fakeUsers[body.username] !== undefined
+
+  if (exist){
+    return res.json({msg: "Error: Username already exists", data: {} });
+  }
+
+  const user = {
+    username: body.username,
+    password: body.password
+    }
+
+  fakeUsers
+  return res.json({msg: 'Account created!', data: user});
+
+})
 
 // Export Route
 module.exports = users;
