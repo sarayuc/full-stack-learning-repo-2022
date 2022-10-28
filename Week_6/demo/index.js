@@ -29,6 +29,16 @@ app.get("/tweets/today", async (req, res) => {
 });
 
 //TODO: Get all tweets by person id
+app.get("/tweets/userId"), async (req, res) => {
+  const twitter = db.collection("tweets")
+  let userId = req.params.userId;
+  const query = await twitter.where("user", "==", user.get());
+  const ret = query.docs.map((data) => {
+    
+  })
+
+
+}
 
 //TODO: Create a tweet
 

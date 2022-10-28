@@ -10,7 +10,8 @@
 <body>
 	<div id='main-container'>
 		<div id='weather-container'>
-			<ul id="weather-results-list"></ul>
+			<div id = 'todays-weather'></div>
+			<div id = "five-day-weather"></div>
 		</div> 
 	</div>
 	<div id='side-container'>
@@ -25,7 +26,6 @@
 <script>
 		// USE YOUR OWN API KEY
 		const apiKey = "482077a69851b3a52657d892f35a699b";
-
         // variable that stores the city that is chosen
 		let city;
         // variable that stores the weather and forecast for the city
@@ -100,13 +100,16 @@
 				lat: lat,
 				lon: lon
 			}
-			getAQI()
+			getAQI(city);
+			getCurrentWeather(city);
 		}
             
 		// BEGIN CODING HERE
 
-		function getAQI() {
-			let apiCall = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+		function getAQI(city) {
+			let apiCall = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}`;
+
+			console.log(city.lat);
 
 				// calls the API
 				fetch(apiCall)
@@ -117,55 +120,96 @@
 					.then((data) => {
 						console.log(data);
 						aqi = data.list[0].main.aqi;
-						renderAQI();
 					});
 		}
 
-		function renderAQI() {
-			document.querySelector('#aqi').innerText = 'AQI: ' + aqi;
-		}
-
-		function currentWeather() {
-			let apiCall = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude={daily}&units=imperial&appid=${apiKey}`
+		function getCurrentWeather(city) {
+			let apiCall = `https://api.openweathermap.org/data/2.5/onecall?lat=${city.lat}&lon=${city.lon}&exclude=minutely,hourly&units=imperial&appid=${apiKey}`
 
 			// calls the API
 			fetch(apiCall)
-				.then((respone) =>
+				.then((response) =>
 				response.json()
 			)
 			.then((data) => {
-				weather = data
-				renderCurrentWeather(weather)
-
+				weather = data;
+				renderCurrentWeather(data);
 			});
 		}
 
-		function renderCurrentWeather(weather) {
-			const ul = document.querySelector('#weather-results-list')
-			weather.forEach((weather, index) => {
-				const li = document.createElement('li')
-				li.setAttribute('class', 'weather-result')
-			})
-		}
+		function renderCurrentWeather(data) {
+			const currentWeatherCont = document.querySelector('#todays-weather');
+			const nextFiveDays = document.querySelector('#five-day-weather');
 
-		function currentWeather(weather) {
 			const todayWeather = {
-				todaysAQI: aqi,
-				temp: weather[0].current.temp - 273
-			}; 
+				// todaysAQI: aqi,
+				temp: Math.round(data.current.temp),
+				image: data.current.weather.icon,
+				description: data.current.weather.description,
+				date: formatDate(0)
+			};
 
+			const h2_1 = document.createElement('h2');
+			const todayDate = document.createTextNode(`${todayWeather.date}`);
+			h2_1.appendChild(todayDate);
 
-			for (var i = 1; i < 6; i++) {
-				const oneDayWeather = {
-					minTemp: weather[0].daily[i].min - 273,
-					maxTemp: weather[0].daily[i].max - 273,
-					image: weather[0].daily[i].weather.icon,
-					date: formatDate(i)
-				};
+			const h1_1 = document.createElement("h1");
+			const textH1 = document.createTextNode(`Weather for ${city.fullName}`);
+			h1_1.appendChild(textH1);
+
+			const currentWeatherImage = document.createElement('img');
+			currentWeatherImage.setAttribute('src', `icons/${todayWeather.image}.svg`);
+			
+			const h2 = document.createElement('h2');
+			const descr = document.createTextNode(`${todayWeather.description}`);
+			h2.appendChild(descr);
+
+			const h1_2 = document.createElement('h1');
+			const temp = document.createTextNode(`${todayWeather.temp}`);
+			h1_2.appendChild(temp);
+
+			const todayAQI = document.createTextNode(`AQI: ${aqi}`);
+
+			currentWeatherCont.appendChild(h2_1);
+			currentWeatherCont.appendChild(h1_1);
+			currentWeatherCont.appendChild(h2);
+			currentWeatherCont.appendChild(h1_2);
+			currentWeatherCont.appendChild(currentWeatherImage);
+			currentWeatherCont.appendChild(todayAQI);
+			
+			// creating flex boxes for next five days
+
+			for (let i = 1; i < 6; i++) {
+				const container = document.createElement('flex-item');
+				const day = currentWeather(data, i);
+
+				const h4 = document.createElement('h4');
+				const oneDate = document.createTextNode(day.date);
+				h4.appendChild(oneDate);
+				container.appendChild(h4);
+
+				const oneImage = document.createElement('img');
+				oneImage.setAttribute('src', `icons/${day.image}.svg`);
+				container.appendChild(oneImage);
+
+				const h3 = document.createElement('h3');
+				const oneTemp = document.createTextNode(`${day.minTemp} to ${day.maxTemp}`);
+				h3.appendChild(oneTemp)
+				container.appendChild(h3)
+
+				nextFiveDays.appendChild(container)
 			}
 
-			return (todayWeather, oneDayWeather)
-			
+		}
+
+		function currentWeather(weather, index) {
+			const oneDayWeather = {
+				minTemp: Math.round(weather.daily[index].temp.min),
+				maxTemp: Math.round(weather.daily[index].temp.max),
+				image: weather.daily[index].weather.icon,
+				date: formatDate(index)
+			};
+			return oneDayWeather;
 		}
 
 		// response from the api from the weather, rendering for weather in a diff function	
