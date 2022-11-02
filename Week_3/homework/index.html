@@ -137,15 +137,15 @@
 			});
 		}
 
-		function renderCurrentWeather(data) {
+		function renderCurrentWeather(weather) {
 			const currentWeatherCont = document.querySelector('#todays-weather');
 			const nextFiveDays = document.querySelector('#five-day-weather');
 
 			const todayWeather = {
 				// todaysAQI: aqi,
-				temp: Math.round(data.current.temp),
-				image: data.current.weather.icon,
-				description: data.current.weather.description,
+				temp: Math.round(weather.current.temp),
+				image: weather.current.weather.icon,
+				description: weather.current.weather.description,
 				date: formatDate(0)
 			};
 
@@ -181,7 +181,7 @@
 
 			for (let i = 1; i < 6; i++) {
 				const container = document.createElement('flex-item');
-				const day = currentWeather(data, i);
+				const day = currentWeather(weather, i);
 
 				const h4 = document.createElement('h4');
 				const oneDate = document.createTextNode(day.date);
