@@ -15,8 +15,8 @@ export default function dayCard(props) {
         return oneDayWeather;
     }
     return (
-        <div id = "five-day-weather">
-
+        <div id = 'flex-item'>
+            
         </div>
     );
 }

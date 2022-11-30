@@ -9,6 +9,9 @@ function App() {
   return (
     <div className="App">
       <currentWeather></currentWeather>
+      <div id = "five-day-weather">
+        <dayCard></dayCard>
+      </div>
     </div>
   );
 }
